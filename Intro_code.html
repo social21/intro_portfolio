@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dhananjay Singh - Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Tone.js for sound effects -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+    <style>
+        /* Custom CSS for glowing effects and animations */
+        :root {
+            --neon-blue: #00E0FF; /* Slightly brighter cyan */
+            --neon-purple: #A020F0; /* Brighter purple */
+            --neon-pink: #FF10F0;  /* Brighter pink */
+            --dark-bg: #100A20; /* Slightly darker background for more contrast */
+            --dark-card: #1E1530; /* Darker card for contrast */
+            --text-color: #e0e0e0;
+            --light-bg: #f0f2f5;
+            --light-text: #333333;
+            --light-card: #ffffff;
+        }
+
+        /* Dark Theme */
+        .dark {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+        }
+        .dark .bg-card {
+            background-color: var(--dark-card);
+        }
+        .dark .border-glowing {
+            border-color: rgba(var(--neon-blue), 0.7);
+            box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-purple) inset; /* Increased spread */
+        }
+        .dark .hover\\:shadow-neon:hover {
+            box-shadow: 0 0 25px var(--neon-blue), 0 0 50px var(--neon-purple), 0 0 80px var(--neon-pink); /* More layers, larger spread */
+        }
+        .dark .text-neon {
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 15px var(--neon-purple); /* Add initial text shadow */
+        }
+        .dark .form-input-glowing:focus {
+            outline: none;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 12px var(--neon-blue), 0 0 25px var(--neon-pink) inset; /* Increased spread */
+        }
+        .dark .btn-glowing {
+            background-color: var(--neon-purple);
+            box-shadow: 0 0 12px var(--neon-purple), 0 0 25px var(--neon-pink); /* Increased spread */
+            animation: neon-pulse 2s infinite alternate; /* Apply pulse animation */
+        }
+        .dark .btn-glowing:hover {
+            background-color: var(--neon-pink);
+            box-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-purple), 0 0 60px var(--neon-blue); /* More layers, larger spread */
+            animation: none; /* Stop pulse on hover for a different effect */
+        }
+
+        /* Light Theme */
+        .light {
+            background-color: var(--light-bg);
+            color: var(--light-text);
+        }
+        .light .bg-card {
+            background-color: var(--light-card);
+        }
+        .light .border-glowing {
+            border-color: rgba(0, 150, 255, 0.7);
+            box-shadow: 0 0 15px rgba(0, 150, 255, 0.5);
+        }
+        .light .hover\\:shadow-neon:hover {
+            box-shadow: 0 0 25px rgba(0, 150, 255, 0.5), 0 0 50px rgba(100, 100, 255, 0.5);
+        }
+        .light .text-neon {
+            color: rgba(0, 150, 255, 1);
+            text-shadow: 0 0 5px rgba(0, 150, 255, 0.5);
+        }
+        .light .form-input-glowing:focus {
+            outline: none;
+            border-color: rgba(0, 150, 255, 1);
+            box-shadow: 0 0 12px rgba(0, 150, 255, 0.5);
+        }
+        .light .btn-glowing {
+            background-color: rgba(0, 150, 255, 1);
+            box-shadow: 0 0 12px rgba(0, 150, 255, 0.5);
+            animation: none; /* No pulse in light mode */
+        }
+        .light .btn-glowing:hover {
+            background-color: rgba(0, 100, 200, 1);
+            box-shadow: 0 0 20px rgba(0, 100, 200, 0.7);
+        }
+
+
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Custom Cursor */
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-blue); /* Glowing ring */
+            background-color: transparent; /* Transparent center */
+            mix-blend-mode: difference;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: all 0.2s ease-out; /* Smooth transition for all properties */
+            z-index: 9999;
+            opacity: 0.8;
+            box-shadow: 0 0 20px var(--neon-blue), 0 0 40px var(--neon-purple); /* Increased glow */
+        }
+        .custom-cursor.grow {
+            width: 40px;
+            height: 40px;
+            background-color: var(--neon-pink); /* Fill with color on grow */
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 30px var(--neon-pink), 0 0 60px var(--neon-blue); /* Enhanced glow on grow */
+        }
+
+        /* Loader */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--dark-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .loader-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            animation: glow 1.5s infinite alternate;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple);
+            }
+            to {
+                text-shadow: 0 0 20px var(--neon-pink), 0 0 40px var(--neon-blue);
+            }
+        }
+
+        /* Section entrance animations (for the section container itself) */
+        .section-hidden {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .section-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Individual element entrance animations */
+        .animate-item {
+            opacity: 0;
+            /* Initial transform for slide-up effect */
+            transform: translateY(20px);
+            /* Ensure no default transition interferes with keyframe animation */
+            transition: none;
+        }
+
+        @keyframes fadeInUpItem {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeftItem {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRightItem {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+
+        /* Typing effect for About Me */
+        .typing-text span {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--neon-blue);
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--neon-blue); }
+        }
+
+        /* Project card hover effect */
+        .project-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .project-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px rgba(0, 240, 255, 0.4), 0 0 40px rgba(138, 43, 226, 0.4);
+        }
+
+        /* Floating navigation bar */
+        .navbar-floating {
+            backdrop-filter: blur(10px);
+            background-color: rgba(26, 26, 46, 0.7); /* Darker background with transparency */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+        .light .navbar-floating {
+            background-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Navigation active glow */
+        .nav-link-glow {
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple), 0 0 30px var(--neon-pink); /* More intense glow */
+            color: var(--neon-blue);
+            font-weight: 600;
+        }
+        .light .nav-link-glow {
+            text-shadow: 0 0 10px rgba(0, 150, 255, 0.7), 0 0 20px rgba(100, 100, 255, 0.7);
+            color: rgba(0, 150, 255, 1);
+        }
+
+
+        /* Morphing shapes (abstract background elements) */
+        .shape-1, .shape-2, .shape-3 {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            filter: blur(50px);
+            animation: morph 8s infinite alternate ease-in-out;
+            z-index: -1;
+        }
+
+        .shape-1 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            top: 10%;
+            left: 5%;
+        }
+
+        .shape-2 {
+            width: 250px;
+            height: 250px;
+            background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+            bottom: 15%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--neon-pink));
+            top: 30%;
+            right: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes morph {
+            0% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(0, 0) rotate(0deg);
+            }
+            50% {
+                border-radius: 30% 70% 70% 30% / 70% 40% 60% 30%;
+                transform: translate(20px, 20px) rotate(180deg);
+            }
+            100% {
+                border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+                transform: translate(0, 0) rotate(360deg);
+            }
+        }
+
+        /* Resume Drawer */
+        .resume-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%; /* Start off-screen to the right */
+            width: 100%;
+            max-width: 600px; /* Max width for the drawer */
+            height: 100%;
+            background-color: var(--dark-card);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: right 0.4s ease-in-out; /* Slide animation */
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        .resume-drawer.open {
+            right: 0; /* Slide into view */
+        }
+        .light .resume-drawer {
+            background-color: var(--light-card);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .loader-text {
+                font-size: 1.8rem;
+            }
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+            .hero-text p {
+                font-size: 1.2rem;
+            }
+            .nav-links {
+                display: none; /* Hide on small screens, can add a hamburger menu if needed */
+            }
+            .navbar-floating {
+                padding: 1rem;
+            }
+            .section-padding {
+                padding: 4rem 1rem;
+            }
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+            .grid-cols-4 {
+                grid-template-columns: 1fr;
+            }
+            .shape-1, .shape-2, .shape-3 {
+                width: 100px;
+                height: 100px;
+                filter: blur(30px);
+            }
+            .resume-drawer {
+                width: 100%; /* Full width on small screens */
+                max-width: none;
+            }
+        }
+
+        /* New Keyframe Animation for Button Pulse */
+        @keyframes neon-pulse {
+            0% {
+                box-shadow: 0 0 12px var(--neon-purple), 0 0 25px var(--neon-pink);
+            }
+            100% {
+                box-shadow: 0 0 18px var(--neon-purple), 0 0 35px var(--neon-pink), 0 0 50px rgba(var(--neon-blue), 0.5);
+            }
+        }
+
+        /* New Keyframe Animation for Hero Text Glow */
+        @keyframes glow-text {
+            from {
+                text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-purple), 0 0 30px var(--neon-pink);
+            }
+            to {
+                text-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-purple), 0 0 45px var(--neon-pink);
+            }
+        }
+
+        /* Background Grid/Scanline Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(to right, rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px; /* Adjust grid size */
+            opacity: 0.1; /* Very subtle */
+            pointer-events: none;
+            z-index: -2; /* Below morphing shapes */
+        }
+
+        /* Hero H1 specific animation */
+        .hero-text h1 {
+            animation: pulse 2s infinite alternate, glow-text 1.5s infinite alternate; /* Combine existing pulse with new glow-text */
+        }
+
+    </style>
+</head>
+<body class="dark transition-colors duration-500">
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+
+    <!-- Loader -->
+    <div class="loader-wrapper" id="loader">
+        <div class="loader-text">Loading Dhananjay’s Portfolio...</div>
+    </div>
+
+    <!-- Floating Navigation Bar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 p-4 flex justify-between items-center navbar-floating transition-all duration-300">
+        <div class="text-2xl font-bold text-neon">Dhananjay</div>
+        <div class="flex items-center space-x-6 nav-links">
+            <a href="#hero" class="text-lg hover:text-neon transition-colors duration-300" data-nav-link="hero">Home</a>
+            <a href="#about" class="text-lg hover:text-neon transition-colors duration-300" data-nav-link="about">About</a>
+            <a href="#skills" class="text-lg hover:text-neon transition-colors duration-300" data-nav-link="skills">Skills</a>
+            <a href="#projects" class="text-lg hover:text-neon transition-colors duration-300" data-nav-link="projects">Projects</a>
+            <a href="#courses" class="text-lg hover:text-neon transition-colors duration-300" data-nav-link="courses">Courses</a>
+            <a href="#contact" class="text-lg hover:text-neon transition-colors duration-300" data-nav-link="contact">Contact</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <!-- Music Play/Pause Button - REMOVED -->
+            <!-- <button id="music-toggle" class="p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition-all duration-300">
+                <i class="fas fa-play text-neon text-xl" id="music-icon"></i>
+            </button> -->
+            <!-- Theme Switcher -->
+            <button id="theme-switcher" class="p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition-all duration-300">
+                <i class="fas fa-sun text-yellow-400 text-xl"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="relative overflow-hidden">
+        <!-- Background Morphing Shapes -->
+        <div class="shape-1"></div>
+        <div class="shape-2"></div>
+        <div class="shape-3"></div>
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center p-4 section-padding section-hidden">
+            <div class="hero-text">
+                <h1 class="text-6xl md:text-7xl lg:text-8xl font-extrabold mb-4 leading-tight text-transparent bg-clip-text bg-gradient-to-r from-neon-blue to-neon-purple animate-pulse animate-item">
+                    Dhananjay Singh
+                </h1>
+                <p class="text-xl md:text-2xl lg:text-3xl font-medium mb-8 text-neon animate-item">
+                    Chemical Engineer | ML Enthusiast
+                </p>
+                <div class="flex flex-wrap justify-center gap-6">
+                    <button id="resume-button" class="btn-glowing px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:scale-105 animate-item" data-hover-magnet>
+                        <i class="fas fa-file-alt mr-2"></i> Resume
+                    </button>
+                    <a href="https://linkedin.com/in/dhananjay-singh" target="_blank" class="btn-glowing px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:scale-105 animate-item" data-hover-magnet>
+                        <i class="fab fa-linkedin mr-2"></i> LinkedIn
+                    </a>
+                    <a href="https://github.com/dhananjay-singh" target="_blank" class="btn-glowing px-8 py-3 rounded-full text-lg font-semibold transition-all duration-300 hover:scale-105 animate-item" data-hover-magnet>
+                        <i class="fab fa-github mr-2"></i> GitHub
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="min-h-screen flex flex-col justify-center items-center p-4 section-padding section-hidden">
+            <div class="max-w-4xl text-center bg-card p-8 rounded-xl border border-glowing hover:shadow-neon animate-item" data-hover-magnet>
+                <h2 class="text-5xl font-bold mb-8 text-neon animate-item">About Me</h2>
+                <p class="text-lg md:text-xl leading-relaxed mb-6 typing-text animate-item">
+                    <span>
+                        I'm Dhananjay Singh, a passionate Chemical Engineering student at IIT Jodhpur. My journey has led me to explore the exciting realms of web development, data science, and machine learning. I thrive on solving complex problems and creating innovative solutions. This portfolio showcases my dedication to learning and my growing expertise in these dynamic fields.
+                    </span>
+                </p>
+                <div class="flex justify-center mt-8 space-x-6">
+                    <!-- Fun visuals / icons -->
+                    <i class="fas fa-flask text-6xl text-neon animate-bounce animate-item"></i>
+                    <i class="fas fa-code text-6xl text-neon animate-pulse animate-item"></i>
+                    <i class="fas fa-brain text-6xl text-neon animate-spin-slow animate-item"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="min-h-screen flex flex-col justify-center items-center p-4 section-padding section-hidden">
+            <div class="max-w-6xl text-center bg-card p-8 rounded-xl border border-glowing hover:shadow-neon animate-item" data-hover-magnet>
+                <h2 class="text-5xl font-bold mb-12 text-neon animate-item">Skills</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+                    <!-- Skill Card -->
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fab fa-python text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">Python</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-c text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">C</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fab fa-js-square text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">JavaScript</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-database text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">SQL</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-table text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">Pandas</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-chart-line text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">Matplotlib</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fab fa-react text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">React</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fab fa-html5 text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">HTML5</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fab fa-css3-alt text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">CSS3</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-brain text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">Machine Learning</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-chart-pie text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">Data Analysis</span>
+                    </div>
+                    <div class="flex flex-col items-center p-6 rounded-lg bg-gray-800 border border-gray-700 hover:border-neon-blue transition-all duration-300 hover:shadow-lg hover:shadow-neon-blue/40 animate-item" data-hover-magnet>
+                        <i class="fas fa-robot text-6xl text-neon mb-4"></i>
+                        <span class="text-xl font-semibold">Deep Learning</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="min-h-screen flex flex-col justify-center items-center p-4 section-padding section-hidden">
+            <div class="max-w-6xl text-center bg-card p-8 rounded-xl border border-glowing hover:shadow-neon animate-item" data-hover-magnet>
+                <h2 class="text-5xl font-bold mb-12 text-neon animate-item">Projects</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Project Card 1 -->
+                    <div class="project-card bg-gray-800 p-6 rounded-lg border border-gray-700 flex flex-col items-center text-center animate-item" data-hover-magnet>
+                        <i class="fas fa-comment-dots text-5xl text-neon mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-2">Sentiment Analysis</h3>
+                        <p class="text-gray-400 mb-4">Developed a model to analyze and classify text sentiment using NLP techniques.</p>
+                        <a href="#" class="text-neon hover:underline font-medium" data-hover-magnet>View Project <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="#" class="text-neon hover:underline font-medium mt-2" data-hover-magnet>Live Demo (Placeholder)</a>
+                    </div>
+                    <!-- Project Card 2 -->
+                    <div class="project-card bg-gray-800 p-6 rounded-lg border border-gray-700 flex flex-col items-center text-center animate-item" data-hover-magnet>
+                        <i class="fas fa-calculator text-5xl text-neon mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-2">Interactive Calculator</h3>
+                        <p class="text-gray-400 mb-4">A web-based calculator with a clean UI and advanced functionalities.</p>
+                        <a href="#" class="text-neon hover:underline font-medium" data-hover-magnet>View Project <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="#" class="text-neon hover:underline font-medium mt-2" data-hover-magnet>Live Demo (Placeholder)</a>
+                    </div>
+                    <!-- Project Card 3 -->
+                    <div class="project-card bg-gray-800 p-6 rounded-lg border border-gray-700 flex flex-col items-center text-center animate-item" data-hover-magnet>
+                        <i class="fas fa-globe-americas text-5xl text-neon mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-2">3D Map Visualization</h3>
+                        <p class="text-gray-400 mb-4">Created an interactive 3D map using Three.js to visualize geographical data.</p>
+                        <a href="#" class="text-neon hover:underline font-medium" data-hover-magnet>View Project <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="#" class="text-neon hover:underline font-medium mt-2" data-hover-magnet>Live Demo (Placeholder)</a>
+                    </div>
+                    <!-- Project Card 4 -->
+                    <div class="project-card bg-gray-800 p-6 rounded-lg border border-gray-700 flex flex-col items-center text-center animate-item" data-hover-magnet>
+                        <i class="fas fa-chart-bar text-5xl text-neon mb-4"></i>
+                        <h3 class="text-2xl font-semibold mb-2">Data Analysis Dashboard</h3>
+                        <p class="text-gray-400 mb-4">Designed a dashboard for visualizing complex datasets and extracting insights.</p>
+                        <a href="#" class="text-neon hover:underline font-medium" data-hover-magnet>View Project <i class="fas fa-arrow-right ml-1"></i></a>
+                        <a href="#" class="text-neon hover:underline font-medium mt-2" data-hover-magnet>Live Demo (Placeholder)</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Courses Section -->
+        <section id="courses" class="min-h-screen flex flex-col justify-center items-center p-4 section-padding section-hidden">
+            <div class="max-w-6xl text-center bg-card p-8 rounded-xl border border-glowing hover:shadow-neon animate-item" data-hover-magnet>
+                <h2 class="text-5xl font-bold mb-12 text-neon animate-item">Important Courses</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Course Box 1 -->
+                    <div class="p-6 rounded-lg bg-gray-800 border-2 border-transparent transition-all duration-300 hover:border-neon-purple hover:shadow-neon animate-item" data-hover-magnet>
+                        <h3 class="text-2xl font-semibold mb-2 text-neon">Data Structures & Algorithms</h3>
+                        <p class="text-gray-400">Fundamental concepts for efficient problem-solving.</p>
+                    </div>
+                    <!-- Course Box 2 -->
+                    <div class="p-6 rounded-lg bg-gray-800 border-2 border-transparent transition-all duration-300 hover:border-neon-purple hover:shadow-neon animate-item" data-hover-magnet>
+                        <h3 class="text-2xl font-semibold mb-2 text-neon">Machine Learning</h3>
+                        <p class="text-gray-400">Core principles and applications of ML algorithms.</p>
+                    </div>
+                    <!-- Course Box 3 -->
+                    <div class="p-6 rounded-lg bg-gray-800 border-2 border-transparent transition-all duration-300 hover:border-neon-purple hover:shadow-neon animate-item" data-hover-magnet>
+                        <h3 class="text-2xl font-semibold mb-2 text-neon">Database Management Systems</h3>
+                        <p class="text-gray-400">Designing and managing relational databases.</p>
+                    </div>
+                    <!-- Course Box 4 -->
+                    <div class="p-6 rounded-lg bg-gray-800 border-2 border-transparent transition-all duration-300 hover:border-neon-purple hover:shadow-neon animate-item" data-hover-magnet>
+                        <h3 class="text-2xl font-semibold mb-2 text-neon">Web Development Basics</h3>
+                        <p class="text-gray-400">HTML, CSS, JavaScript fundamentals for web creation.</p>
+                    </div>
+                    <!-- Course Box 5 -->
+                    <div class="p-6 rounded-lg bg-gray-800 border-2 border-transparent transition-all duration-300 hover:border-neon-purple hover:shadow-neon animate-item" data-hover-magnet>
+                        <h3 class="text-2xl font-semibold mb-2 text-neon">Process Dynamics & Control</h3>
+                        <p class="text-gray-400">Chemical Engineering core subject on system behavior.</p>
+                    </div>
+                    <!-- Course Box 6 -->
+                    <div class="p-6 rounded-lg bg-gray-800 border-2 border-transparent transition-all duration-300 hover:border-neon-purple hover:shadow-neon animate-item" data-hover-magnet>
+                        <h3 class="text-2xl font-semibold mb-2 text-neon">Numerical Methods</h3>
+                        <p class="text-gray-400">Solving mathematical problems using computational techniques.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="min-h-screen flex flex-col justify-center items-center p-4 section-padding section-hidden">
+            <div class="max-w-xl w-full text-center bg-card p-8 rounded-xl border border-glowing hover:shadow-neon animate-item" data-hover-magnet>
+                <h2 class="text-5xl font-bold mb-12 text-neon animate-item">Get In Touch</h2>
+                <form class="space-y-6">
+                    <div>
+                        <input type="text" placeholder="Your Name" class="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 form-input-glowing transition-all duration-300 animate-item" data-hover-magnet>
+                    </div>
+                    <div>
+                        <input type="email" placeholder="Your Email" class="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 form-input-glowing transition-all duration-300 animate-item" data-hover-magnet>
+                    </div>
+                    <div>
+                        <textarea placeholder="Your Message" rows="6" class="w-full p-4 rounded-lg bg-gray-800 border border-gray-700 form-input-glowing transition-all duration-300 animate-item" data-hover-magnet></textarea>
+                    </div>
+                    <button type="submit" class="btn-glowing px-8 py-3 rounded-full text-lg font-semibold w-full transition-all duration-300 hover:scale-105 animate-item" data-hover-magnet>
+                        Send Message <i class="fas fa-paper-plane ml-2"></i>
+                    </button>
+                </form>
+                <div class="mt-12 flex justify-center space-x-8">
+                    <a href="mailto:dhananjay.singh@example.com" class="text-neon hover:text-neon-pink transition-colors duration-300 animate-item" data-hover-magnet>
+                        <i class="fas fa-envelope text-4xl"></i>
+                    </a>
+                    <a href="https://linkedin.com/in/dhananjay-singh" target="_blank" class="text-neon hover:text-neon-pink transition-colors duration-300 animate-item" data-hover-magnet>
+                        <i class="fab fa-linkedin text-4xl"></i>
+                    </a>
+                    <a href="https://github.com/dhananjay-singh" target="_blank" class="text-neon hover:text-neon-pink transition-colors duration-300 animate-item" data-hover-magnet>
+                        <i class="fab fa-github text-4xl"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Resume Drawer -->
+    <div id="resume-drawer" class="resume-drawer p-6 text-left">
+        <div class="flex justify-between items-center mb-6">
+            <h3 class="text-3xl font-bold text-neon">Dhananjay Singh's Resume</h3>
+            <button id="close-resume-drawer" class="text-neon hover:text-neon-pink text-3xl" data-hover-magnet>
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="resume-content text-gray-300">
+            <p class="mb-4">This is a placeholder for Dhananjay Singh's resume content. In a real scenario, you would embed a PDF viewer, or list key resume points here.</p>
+            <h4 class="text-xl font-semibold mb-2 text-neon">Education</h4>
+            <ul class="list-disc list-inside mb-4">
+                <li>B.Tech in Chemical Engineering, IIT Jodhpur (Expected 20XX)</li>
+            </ul>
+            <h4 class="text-xl font-semibold mb-2 text-neon">Skills</h4>
+            <ul class="list-disc list-inside mb-4">
+                <li>Programming: Python, C, JavaScript, SQL</li>
+                <li>Data Science: Pandas, NumPy, Matplotlib, Scikit-learn</li>
+                <li>Web Development: HTML, CSS, React, Tailwind CSS</li>
+                <li>Machine Learning: Deep Learning, NLP, Computer Vision (basic)</li>
+            </ul>
+            <h4 class="text-xl font-semibold mb-2 text-neon">Projects</h4>
+            <ul class="list-disc list-inside mb-4">
+                <li>Sentiment Analysis Model</li>
+                <li>Interactive Calculator (Web)</li>
+                <li>3D Map Visualization</li>
+                <li>Data Analysis Dashboard</li>
+            </ul>
+            <h4 class="text-xl font-semibold mb-2 text-neon">Experience</h4>
+            <ul class="list-disc list-inside mb-4">
+                <li>(Placeholder for Internship/Work Experience)</li>
+            </ul>
+            <p class="mt-6 text-center">
+                <a href="#" class="btn-glowing px-6 py-2 rounded-full text-lg font-semibold" data-hover-magnet>Download Full Resume (PDF)</a>
+            </p>
+        </div>
+    </div>
+
+
+    <script>
+        // Initialize Tone.js for click sounds
+        const clickSynth = new Tone.Synth().toDestination();
+
+        // All music-related Tone.js code has been removed.
+        // The music toggle button and its associated logic are no longer present.
+
+        // Custom Cursor Logic
+        const customCursor = document.querySelector('.custom-cursor');
+        const interactiveElements = document.querySelectorAll('button, a, input, textarea, .project-card, .bg-card, [data-hover-magnet]');
+
+        document.addEventListener('mousemove', e => {
+            customCursor.style.left = e.clientX + 'px';
+            customCursor.style.top = e.clientY + 'px';
+        });
+
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                customCursor.classList.add('grow');
+            });
+            element.addEventListener('mouseleave', () => {
+                customCursor.classList.remove('grow');
+            });
+            element.addEventListener('click', () => {
+                // Play a subtle click sound on interaction
+                if (Tone.context.state !== 'running') {
+                    Tone.start(); // Start audio context on first user interaction
+                }
+                clickSynth.triggerAttackRelease('C4', '8n'); // Play C4 for an 8th note
+            });
+        });
+
+        document.addEventListener('mousedown', () => {
+            customCursor.classList.add('grow');
+        });
+        document.addEventListener('mouseup', () => {
+            customCursor.classList.remove('grow');
+        });
+        document.addEventListener('mouseenter', () => {
+            customCursor.style.opacity = '0.8';
+        });
+        document.addEventListener('mouseleave', () => {
+            customCursor.style.opacity = '0';
+        });
+
+        // Loader Logic
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(async () => { // Use async here because Tone.start() returns a Promise
+                loader.style.opacity = '0';
+                setTimeout(async () => {
+                    loader.style.display = 'none';
+                    // Show hero section after loader disappears and trigger its animations
+                    const heroSection = document.getElementById('hero');
+                    heroSection.classList.add('section-visible');
+                    // Animate individual items within the hero section
+                    const heroAnimatedItems = heroSection.querySelectorAll('.animate-item');
+                    heroAnimatedItems.forEach((item, index) => {
+                        item.style.animation = `fadeInUpItem 0.7s ease-out forwards ${index * 0.1}s`;
+                    });
+
+                }, 500); // Wait for fade-out to complete
+            }, 2000); // Display loader for 2 seconds
+        });
+
+        // Smooth Scroll for Navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Intersection Observer for Section Animations and Navigation Glow
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2 // Trigger when 20% of the section is visible
+        };
+
+        const sectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                const targetId = entry.target.id;
+                const correspondingNavLink = document.querySelector(`[data-nav-link="${targetId}"]`);
+
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('section-visible'); // This triggers the main section fade-up
+
+                    // Animate individual items within the section with staggered delays
+                    const animatedItems = entry.target.querySelectorAll('.animate-item');
+                    animatedItems.forEach((item, index) => {
+                        // Apply different animations based on element type or position if desired
+                        let animationName = 'fadeInUpItem'; // Default animation
+                        // Example for potential future variations:
+                        // if (item.classList.contains('project-card')) {
+                        //     animationName = 'slideInLeftItem';
+                        // }
+                        item.style.animation = `${animationName} 0.7s ease-out forwards ${index * 0.1}s`;
+                    });
+
+                    // Add glow to nav link
+                    navLinks.forEach(link => link.classList.remove('nav-link-glow')); // Remove from all
+                    if (correspondingNavLink) {
+                        correspondingNavLink.classList.add('nav-link-glow');
+                    }
+                } else {
+                    // Optional: Remove classes if section goes out of view to re-animate on scroll back
+                    // This creates a "reset" effect when scrolling away
+                    // entry.target.classList.remove('section-visible');
+                    // const animatedItems = entry.target.querySelectorAll('.animate-item');
+                    // animatedItems.forEach(item => {
+                    //     item.style.animation = 'none'; // Reset animation
+                    //     item.style.opacity = '0';
+                    //     item.style.transform = 'translateY(20px)'; // Reset initial state
+                    // });
+
+                    if (correspondingNavLink) {
+                        correspondingNavLink.classList.remove('nav-link-glow');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        // Initialize all sections (except hero, handled by loader) as hidden for animation
+        sections.forEach(section => {
+            if (section.id !== 'hero') {
+                section.classList.add('section-hidden');
+            }
+            sectionObserver.observe(section);
+        });
+
+        // Theme Switcher Logic
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const htmlElement = document.documentElement; // This refers to the <html> tag
+
+        themeSwitcher.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                htmlElement.classList.add('light');
+                themeSwitcher.innerHTML = '<i class="fas fa-moon text-blue-700 text-xl"></i>'; // Change icon to moon for dark mode
+            } else {
+                htmlElement.classList.remove('light');
+                htmlElement.classList.add('dark');
+                themeSwitcher.innerHTML = '<i class="fas fa-sun text-yellow-400 text-xl"></i>'; // Change icon to sun for light mode
+            }
+        });
+
+        // Typing Effect for About Me Section (only once when visible)
+        const aboutSection = document.getElementById('about');
+        const typingTextSpan = document.querySelector('.typing-text span');
+        const originalText = typingTextSpan.textContent; // Store original text
+        typingTextSpan.textContent = ''; // Clear text initially for typing effect
+
+        const aboutObserverOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5 // Trigger when 50% of about section is visible
+        };
+
+        let hasTyped = false; // Flag to ensure typing effect runs only once
+
+        const aboutSectionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !hasTyped) {
+                    let i = 0;
+                    const speed = 50; // Typing speed in milliseconds
+                    function typeWriter() {
+                        if (i < originalText.length) {
+                            typingTextSpan.textContent += originalText.charAt(i);
+                            i++;
+                            setTimeout(typeWriter, speed);
+                        } else {
+                            // Remove blinking cursor after typing is complete
+                            typingTextSpan.style.borderRight = 'none';
+                        }
+                    }
+                    typeWriter();
+                    hasTyped = true; // Set flag to true
+                    observer.unobserve(entry.target); // Stop observing after typing
+                }
+            });
+        }, aboutObserverOptions);
+
+        aboutSectionObserver.observe(aboutSection);
+
+        // Resume Drawer Logic
+        const resumeButton = document.getElementById('resume-button');
+        const resumeDrawer = document.getElementById('resume-drawer');
+        const closeResumeDrawerButton = document.getElementById('close-resume-drawer');
+
+        resumeButton.addEventListener('click', () => {
+            resumeDrawer.classList.add('open');
+        });
+
+        closeResumeDrawerButton.addEventListener('click', () => {
+            resumeDrawer.classList.remove('open');
+        });
+
+        // Close drawer if clicked outside (optional, but good for UX)
+        document.addEventListener('click', (event) => {
+            if (resumeDrawer.classList.contains('open') &&
+                !resumeDrawer.contains(event.target) &&
+                event.target !== resumeButton) {
+                resumeDrawer.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
